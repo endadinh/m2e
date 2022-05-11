@@ -1,0 +1,44 @@
+{
+	"compiler": {
+		"version": "0.6.12+commit.27d51765"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Token/Token.sol": "SafeMath"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/Token/Token.sol": {
+			"keccak256": "0xa2747cc88da1bd2e2af03e46f34d3c3fd94f9759a60e1423253d24e7d7cca3cd",
+			"urls": [
+				"bzz-raw://9bf77d3bb1ec979739bac6abfe94133968499c6bc99bd3d03b30478e2c594c50",
+				"dweb:/ipfs/QmdPLSFuEf7H9t4B1KF3P8S5uHo8nc9GMP3YXmy8kesBSD"
+			]
+		}
+	},
+	"version": 1
+}

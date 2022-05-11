@@ -1,0 +1,37 @@
+{
+	"compiler": {
+		"version": "0.5.16+commit.9c3226ce"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/NFTs/PancakeFactory.sol": "UQ112x112"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/NFTs/PancakeFactory.sol": {
+			"keccak256": "0xa8dc5bb1983ce906d42a3aa84455d7682efc7878ca336da8242682428296a8d8",
+			"urls": [
+				"bzz-raw://43b4dce35d2d8f43bde973ceea3dc8c4dfbef53f9776c2616fc630a5ce6d0ca4",
+				"dweb:/ipfs/QmVAG8RdP9x7gDgwNXAyWNSV9YYdHYK7yiVXSiSoXReMvi"
+			]
+		}
+	},
+	"version": 1
+}

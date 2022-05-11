@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.6.12+commit.27d51765"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Pool/PoolPig.sol": "Address"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/Pool/PoolPig.sol": {
+			"keccak256": "0x6896945bf4a4d4813bf6a1dee8e8a410d3783fa4ea7c27ad3800ca089c7c3a68",
+			"license": "Unlicensed",
+			"urls": [
+				"bzz-raw://15ace6ebe3f99929f68a56503dc990ffbb937ddfc46fe70cceefa20318e29ee7",
+				"dweb:/ipfs/QmU9MNAm9pN6k2mhQSLF13za56oHcKih9NSfCCN2za92Du"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,61 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"görli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"linkReferences": {},
+			"object": "6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea264697066735822122048b492bacc67444a3d80e4f9b7cf9a4ebe913c15ff251a7b78f8532d436136f464736f6c634300060c0033",
+			"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x3F DUP1 PUSH1 0x1D PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0x48 0xB4 SWAP3 0xBA 0xCC PUSH8 0x444A3D80E4F9B7CF SWAP11 0x4E 0xBE SWAP2 EXTCODECOPY ISZERO SELFDESTRUCT 0x25 BYTE PUSH28 0x78F8532D436136F464736F6C634300060C0033000000000000000000 ",
+			"sourceMap": "12331:634:0:-:0;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "6080604052600080fdfea264697066735822122048b492bacc67444a3d80e4f9b7cf9a4ebe913c15ff251a7b78f8532d436136f464736f6c634300060c0033",
+			"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0x48 0xB4 SWAP3 0xBA 0xCC PUSH8 0x444A3D80E4F9B7CF SWAP11 0x4E 0xBE SWAP2 EXTCODECOPY ISZERO SELFDESTRUCT 0x25 BYTE PUSH28 0x78F8532D436136F464736F6C634300060C0033000000000000000000 ",
+			"sourceMap": "12331:634:0:-:0;;;;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "12600",
+				"executionCost": "66",
+				"totalCost": "12666"
+			},
+			"internal": {
+				"_frozen_add(address,uint256)": "infinite",
+				"_frozen_balanceOf(address)": "infinite",
+				"_frozen_sub(address,uint256)": "infinite"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": []
+}

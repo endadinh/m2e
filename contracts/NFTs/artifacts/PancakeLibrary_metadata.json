@@ -1,0 +1,40 @@
+{
+	"compiler": {
+		"version": "0.6.6+commit.6c089d02"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/NFTs/PancakeRouter.sol": "PancakeLibrary"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/NFTs/PancakeRouter.sol": {
+			"keccak256": "0xf34032c13651cfe801bdc02e327ec56a1b491e4b72a9c6abe93bab1d8449a5da",
+			"urls": [
+				"bzz-raw://25bac52fe629c221c6ab668685ea3ae896b6113a25d70d784401726a6cc401da",
+				"dweb:/ipfs/QmP7WeNRxbXoVDBxCuSywTNDiWypkfJXRHuoem7pUJa4Aq"
+			]
+		}
+	},
+	"version": 1
+}
