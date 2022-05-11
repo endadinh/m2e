@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.13+commit.abaa5c0e"
+		"version": "0.6.12+commit.27d51765"
 	},
 	"language": "Solidity",
 	"output": {
@@ -132,9 +132,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Pool/Pool.sol": "IUniswapV2Router02"
+			"contracts/Token/Token.sol": "IUniswapV2Router02"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -146,12 +146,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Pool/Pool.sol": {
-			"keccak256": "0x116775cad2f2bb2eab15f279eadd51adc04535c2d60a89a51681ffe1e1fbc3db",
+		"contracts/Token/Token.sol": {
+			"keccak256": "0xf0fd996a328d50dff8b550d5c8de707385353e9f36931c88306e8dc895d031c9",
 			"license": "Unlicensed",
 			"urls": [
-				"bzz-raw://966c82db10ac08ffd0a3c6037d583a8dd00f90dba1145a5b2f877a95618c8bde",
-				"dweb:/ipfs/QmZ4gmDqdixRzqzymqtPeeLmZt8FFj4yY35Q4iL2arU8dH"
+				"bzz-raw://64d021f1977fa1c796a86a028779d77a0ed48b5a4a14d028d594c7449e959e83",
+				"dweb:/ipfs/QmcGWc5p4FnFco98vxpdyPLfcaTSuRfmNjo3dM3edtH7JX"
 			]
 		}
 	},

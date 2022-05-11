@@ -775,12 +775,6 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"burn(uint256)": {
-					"details": "Destroys `amount` tokens from the caller. See {ERC20-_burn}."
-				},
-				"burnFrom(address,uint256)": {
-					"details": "Destroys `amount` tokens from `account`, deducting from the caller's allowance. See {ERC20-_burn} and {ERC20-allowance}. Requirements: - the caller must have allowance for ``accounts``'s tokens of at least `amount`."
-				},
 				"owner()": {
 					"details": "Returns the address of the current owner."
 				},
@@ -820,10 +814,10 @@
 	},
 	"sources": {
 		"contracts/Token/Token.sol": {
-			"keccak256": "0xa2747cc88da1bd2e2af03e46f34d3c3fd94f9759a60e1423253d24e7d7cca3cd",
+			"keccak256": "0xc238374956984fb698ab6038d2698ceae24fbcbda4a6e9a4efe29f32ddf68540",
 			"urls": [
-				"bzz-raw://9bf77d3bb1ec979739bac6abfe94133968499c6bc99bd3d03b30478e2c594c50",
-				"dweb:/ipfs/QmdPLSFuEf7H9t4B1KF3P8S5uHo8nc9GMP3YXmy8kesBSD"
+				"bzz-raw://0d3dbd49412bce54bc86a11fcdad2eb11b2e39cb3851f7044073a642023110d7",
+				"dweb:/ipfs/Qmf394JgaPNTp9bQdGLziXHQBtdmQiePv9NozRBEAvkfhz"
 			]
 		}
 	},

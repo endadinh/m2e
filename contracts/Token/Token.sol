@@ -1,4 +1,30 @@
+// SPDX-License-Identifier: Unlicensed
+
 pragma solidity ^0.6.0;
+
+interface IUniswapV2Factory {
+    function createPair(address tokenA, address tokenB) external returns (address pair);
+}
+
+interface IUniswapV2Router02 {
+    function swapExactTokensForETHSupportingFeeOnTransferTokens(
+        uint amountIn,
+        uint amountOutMin,
+        address[] calldata path,
+        address to,
+        uint deadline
+    ) external;
+    function factory() external pure returns (address);
+    function WETH() external pure returns (address);
+    function addLiquidityETH(
+        address token,
+        uint amountTokenDesired,
+        uint amountTokenMin,
+        uint amountETHMin,
+        address to,
+        uint deadline
+    ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
+}
 
 
 abstract contract Context {
@@ -611,16 +637,6 @@ contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
 
         emit MintFrozen(account, amount);
     }
-	
-	/*function _freeze(address account, uint256 amount) internal {
-        require(account != address(0), "ERC20: freeze from the zero address");
-        require(amount > 0, "ERC20: freeze from the address: amount should be > 0");
-
-        _balances[account] = _balances[account].sub(amount);
-        _frozen_add(account, amount);
-
-        emit Freeze(account, amount);
-    } */
     
     function _melt(address account, uint256 amount) internal {
         require(account != address(0), "ERC20: melt from the zero address");
@@ -654,12 +670,26 @@ contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
 pragma solidity 0.6.12;
 
 // Token with Governance.
-contract SQFToken is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) {
+contract World_Step is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) {
 	
-    address public feeaddr;
-	uint256 public transferFeeRate;
+    address payable private _developmentAddress = payable(0x8492cbd894686D7e98214541903c7BA6f94928D6);
+    address payable private _marketingAddress = payable(0xa4eD7aa4eF5deB0A63e97d9Cb77445aE553feb1d);
+    address payable private _rewardPool = payable(0xe061915592536656a92B9fd59e46b19eF920692F);
+
+	uint256 public transferFeeRateBuy;
+	uint256 public transferFeeRateSell;
+
 	
     mapping(address => bool) private _transactionFee;
+    mapping (address => bool) private _isExcludedFromFee;
+
+
+
+	IUniswapV2Router02 public uniswapV2Router;
+    IUniswapV2Factory public uniswapV2Factory;
+
+    address public _factory;
+    address public uniswapV2Pair;
 
 	/**
 	 * @dev See {ERC20-_beforeTokenTransfer}.
@@ -674,24 +704,10 @@ contract SQFToken is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) {
 
 	}
 
-	/**
-	 * @dev Moves tokens `amount` from `sender` to `recipient`.
-	 *
-	 * This is internal function is equivalent to {transfer}, and can be used to
-	 * e.g. implement automatic token fees, slashing mechanisms, etc.
-	 *
-	 * Emits a {Transfer} event.
-	 *
-	 * Requirements:
-	 *
-	 * - `sender` cannot be the zero address.
-	 * - `recipient` cannot be the zero address.
-	 * - `sender` must have a balance of at least `amount`.
-	 */
 	function _transfer(address sender, address recipient, uint256 amount) internal virtual override {
-	    if (transferFeeRate > 0 && _transactionFee[recipient] == true && recipient != address(0) && feeaddr != address(0)) {
-			uint256 _feeamount = amount.mul(transferFeeRate).div(100);
-			super._transfer(sender, feeaddr, _feeamount); // TransferFee
+	    if (transferFeeRateBuy > 0 && _transactionFee[recipient] == true && recipient != address(0) && _developmentAddress != address(0)) {
+			uint256 _feeamount = amount.mul(transferFeeRateBuy).div(100);
+			super._transfer(sender, _developmentAddress, _feeamount); // TransferFee
 			amount = amount.sub(_feeamount);
 		}
 
@@ -703,27 +719,11 @@ contract SQFToken is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) {
 		_mint(_to, _amount);
 	}
 
-	/**
-	 * @dev Destroys `amount` tokens from the caller.
-	 *
-	 * See {ERC20-_burn}.
-	 */
 	function burn(uint256 amount) public virtual returns (bool) {
 		_burn(_msgSender(), amount);
 		return true;
 	}
 
-	/**
-	 * @dev Destroys `amount` tokens from `account`, deducting from the caller's
-	 * allowance.
-	 *
-	 * See {ERC20-_burn} and {ERC20-allowance}.
-	 *
-	 * Requirements:
-	 *
-	 * - the caller must have allowance for ``accounts``'s tokens of at least
-	 * `amount`.
-	 */
 	function burnFrom(address account, uint256 amount) public virtual returns (bool) {
 		uint256 decreasedAllowance = allowance(account, _msgSender()).sub(amount, "ERC20: burn amount exceeds allowance");
 
@@ -767,16 +767,27 @@ contract SQFToken is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) {
 		delete _transactionFee[_transferFeeAddress];
 	}
 
-    function setFeeAddr(address _feeaddr) public onlyOwner {
-		feeaddr = _feeaddr;
-    }
+    // function setFeeAddr(address _feeaddr) public onlyOwner {
+	// 	feeaddr = _feeaddr;
+    // }
     
-    function setTransferFeeRate(uint256 _rate) public onlyOwner {
-		transferFeeRate = _rate;
+    function setTransferFeeRateBuy(uint256 _rate) public onlyOwner {
+		transferFeeRateBuy = _rate;
+    }
+	  function setTransferFeeRateSeel(uint256 _rate) public onlyOwner {
+		transferFeeRateSell = _rate;
     }
 
 	constructor() public {
-	    feeaddr = msg.sender;
-		transferFeeRate = 0;
+		transferFeeRateBuy = 4;
+		transferFeeRateSell = 1;
+		 IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3));
+        uniswapV2Router = _uniswapV2Router;
+        uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
+            .createPair(address(this), _uniswapV2Router.WETH() );
+        _isExcludedFromFee[owner()] = true;
+        _isExcludedFromFee[address(this)] = true;
+        _isExcludedFromFee[_developmentAddress] = true;
+        _isExcludedFromFee[_marketingAddress] = true;
 	}
 }

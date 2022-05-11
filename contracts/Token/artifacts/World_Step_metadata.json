@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.13+commit.abaa5c0e"
+		"version": "0.6.12+commit.27d51765"
 	},
 	"language": "Solidity",
 	"output": {
@@ -33,6 +33,107 @@
 					}
 				],
 				"name": "Approval",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Freeze",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "FrozenTransfer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "MeltFrozen",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousMelter",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newMelter",
+						"type": "address"
+					}
+				],
+				"name": "MelterTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "MintFrozen",
 				"type": "event"
 			},
 			{
@@ -80,44 +181,6 @@
 				"type": "event"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "previous",
-						"type": "address"
-					},
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "adr",
-						"type": "address"
-					}
-				],
-				"name": "devAddressUpdated",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "previous",
-						"type": "address"
-					},
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "adr",
-						"type": "address"
-					}
-				],
-				"name": "marketingAddressUpdated",
-				"type": "event"
-			},
-			{
 				"inputs": [],
 				"name": "_factory",
 				"outputs": [
@@ -128,6 +191,32 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "addToMelters",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_transferFeeAddress",
+						"type": "address"
+					}
+				],
+				"name": "addTransferFeeAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -217,6 +306,56 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "burn",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "burnFrom",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "claimMelterAdmin",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -256,17 +395,17 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address[]",
-						"name": "accounts",
-						"type": "address[]"
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
 					},
 					{
-						"internalType": "bool",
-						"name": "excluded",
-						"type": "bool"
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
-				"name": "excludeMultipleAccountsFromFees",
+				"name": "destroyFrozen",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -309,6 +448,85 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "meltTokens",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "melteradmin",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "mint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "mintFrozenTokens",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "name",
 				"outputs": [
@@ -336,6 +554,45 @@
 			},
 			{
 				"inputs": [],
+				"name": "pendingMelterAdmin",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "removeFromMelters",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_transferFeeAddress",
+						"type": "address"
+					}
+				],
+				"name": "removeTransferBurnAddress",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -345,26 +602,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "redisFeeOnBuy",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "redisFeeOnSell",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "taxFeeOnBuy",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "taxFeeOnSell",
+						"name": "_rate",
 						"type": "uint256"
 					}
 				],
-				"name": "setFee",
+				"name": "setTransferFeeRateBuy",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -372,25 +614,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address payable",
-						"name": "dev",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "_rate",
+						"type": "uint256"
 					}
 				],
-				"name": "setNewDevAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address payable",
-						"name": "markt",
-						"type": "address"
-					}
-				],
-				"name": "setNewMarketingAddress",
+				"name": "setTransferFeeRateSeel",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -446,6 +675,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "transferFeeRateBuy",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "transferFeeRateSell",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -471,6 +726,48 @@
 						"type": "bool"
 					}
 				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transferFrozenToken",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newMelter",
+						"type": "address"
+					}
+				],
+				"name": "transferMelterAdmin",
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -529,20 +826,34 @@
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"mint(address,uint256)": {
+					"notice": "Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef)."
+				}
+			},
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Pool/Pool.sol": "World_Step"
+			"contracts/Token/Token.sol": "World_Step"
 		},
-		"evmVersion": "london",
+		"evmVersion": "istanbul",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -554,12 +865,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Pool/Pool.sol": {
-			"keccak256": "0x116775cad2f2bb2eab15f279eadd51adc04535c2d60a89a51681ffe1e1fbc3db",
+		"contracts/Token/Token.sol": {
+			"keccak256": "0xf0fd996a328d50dff8b550d5c8de707385353e9f36931c88306e8dc895d031c9",
 			"license": "Unlicensed",
 			"urls": [
-				"bzz-raw://966c82db10ac08ffd0a3c6037d583a8dd00f90dba1145a5b2f877a95618c8bde",
-				"dweb:/ipfs/QmZ4gmDqdixRzqzymqtPeeLmZt8FFj4yY35Q4iL2arU8dH"
+				"bzz-raw://64d021f1977fa1c796a86a028779d77a0ed48b5a4a14d028d594c7449e959e83",
+				"dweb:/ipfs/QmcGWc5p4FnFco98vxpdyPLfcaTSuRfmNjo3dM3edtH7JX"
 			]
 		}
 	},

@@ -125,10 +125,11 @@
 	},
 	"sources": {
 		"contracts/Token/Token.sol": {
-			"keccak256": "0xa2747cc88da1bd2e2af03e46f34d3c3fd94f9759a60e1423253d24e7d7cca3cd",
+			"keccak256": "0xf0fd996a328d50dff8b550d5c8de707385353e9f36931c88306e8dc895d031c9",
+			"license": "Unlicensed",
 			"urls": [
-				"bzz-raw://9bf77d3bb1ec979739bac6abfe94133968499c6bc99bd3d03b30478e2c594c50",
-				"dweb:/ipfs/QmdPLSFuEf7H9t4B1KF3P8S5uHo8nc9GMP3YXmy8kesBSD"
+				"bzz-raw://64d021f1977fa1c796a86a028779d77a0ed48b5a4a14d028d594c7449e959e83",
+				"dweb:/ipfs/QmcGWc5p4FnFco98vxpdyPLfcaTSuRfmNjo3dM3edtH7JX"
 			]
 		}
 	},
