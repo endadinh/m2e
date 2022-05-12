@@ -1,73 +1,10 @@
 {
 	"compiler": {
-		"version": "0.6.12+commit.27d51765"
+		"version": "0.8.13+commit.abaa5c0e"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "token0",
-						"type": "address"
-					},
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "token1",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "pair",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "PairCreated",
-				"type": "event"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "allPairs",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "pair",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "allPairsLength",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
 			{
 				"inputs": [
 					{
@@ -91,82 +28,6 @@
 				],
 				"stateMutability": "nonpayable",
 				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "feeTo",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "feeToSetter",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "tokenA",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "tokenB",
-						"type": "address"
-					}
-				],
-				"name": "getPair",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "pair",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "setFeeTo",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "setFeeToSetter",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -182,9 +43,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Pool/PoolPig.sol": "IUniswapV2Factory"
+			"contracts/Pool/Pool.sol": "IUniswapV2Factory"
 		},
-		"evmVersion": "istanbul",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -196,12 +57,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Pool/PoolPig.sol": {
-			"keccak256": "0x0be47c0202d6a0832d1fafb84223feb0d7612d02fe640c5efa2f26a668c11bb0",
+		"contracts/Pool/Pool.sol": {
+			"keccak256": "0x57dca683be2433375b9375973fc2db72eaa7000a6135a04e0773622c7c91668c",
 			"license": "Unlicensed",
 			"urls": [
-				"bzz-raw://7b5457d8f869085b20c1cb00d1933014d278bdb69e646fb7d26d46604e2e995f",
-				"dweb:/ipfs/QmW3iBk558uYPrSFwhKy1jzR71dYGjWnXEomwwfqVezAFZ"
+				"bzz-raw://e8f824539f3a9ac5b06cb883a5d7ebb72c0cba84fd06b954aa17948e0409545f",
+				"dweb:/ipfs/QmZqQHrCxDGmvMUPt2YWb1cJeiotEZ45dtoxpUT9LS1zSD"
 			]
 		}
 	},

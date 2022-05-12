@@ -1,0 +1,753 @@
+{
+	"compiler": {
+		"version": "0.8.13+commit.abaa5c0e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_nftContract",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_tokenContract",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "status",
+						"type": "string"
+					}
+				],
+				"name": "ActiveAccount",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "tokenId",
+						"type": "string"
+					}
+				],
+				"name": "Burn",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "receiver",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "tokenId",
+						"type": "string"
+					}
+				],
+				"name": "Claim",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "tokenId",
+						"type": "string"
+					}
+				],
+				"name": "Mint",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "tokenId",
+						"type": "string"
+					}
+				],
+				"name": "TransferToGame",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "tokenId",
+						"type": "string"
+					}
+				],
+				"name": "UnlockToken",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "ERC721_Interface",
+				"outputs": [
+					{
+						"internalType": "bytes4",
+						"name": "",
+						"type": "bytes4"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "_mainToken",
+				"outputs": [
+					{
+						"internalType": "contract SQFItem",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "typeAccount",
+						"type": "string"
+					}
+				],
+				"name": "activeAccount",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "activeItem",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "enum FactoryStorage.activeStatus",
+						"name": "status",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "angelActivePrice",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "devilActivePrice",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "itemId",
+						"type": "uint256"
+					}
+				],
+				"name": "getIngameItem",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "id",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "owner",
+								"type": "address"
+							},
+							{
+								"internalType": "string",
+								"name": "itemId",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "externalId",
+								"type": "string"
+							},
+							{
+								"internalType": "bool",
+								"name": "ingame",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct FactoryStorage.ingameItems",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "ingame",
+						"type": "bool"
+					}
+				],
+				"name": "getOwnItems",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "id",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "owner",
+								"type": "address"
+							},
+							{
+								"internalType": "string",
+								"name": "itemId",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "externalId",
+								"type": "string"
+							},
+							{
+								"internalType": "bool",
+								"name": "ingame",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct FactoryStorage.ingameItems[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "goblinActivePrice",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "ingameItem",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "itemId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "externalId",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "ingame",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "lockIngameItem",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "nftContract",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "itemId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "externalId",
+						"type": "string"
+					}
+				],
+				"name": "safeMintItem",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "setOwnerIngameItem",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "setSQFToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "sqfToken",
+				"outputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "unlockIngameItem",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "userStatus",
+				"outputs": [
+					{
+						"internalType": "enum FactoryStorage.activeStatus",
+						"name": "status",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/WorldStep/SQFIFactory.sol": "SQFItemFactory"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/WorldStep/Address.sol": {
+			"keccak256": "0xa7ab8d72f26cd3221f1c88c55482ebf828b3c6d3549e1f07fd7eace8c436fa13",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8df9ba434289b498b23c5e2102abbfaaad5e8379ed5f2e4c7cdee923a1089175",
+				"dweb:/ipfs/QmeBP8VJ5CTJjRxohF2oXjz4s3BAafJiERtgJMn8J4VpB5"
+			]
+		},
+		"contracts/WorldStep/Context.sol": {
+			"keccak256": "0x8aad88bfaec1c07fdd323891feeb0cc0953c36628c01cba1e4bdc7adce15a7f3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e668b61d022bda450998d1462b9ac07ad72981aa34b6e7879ebf5aab835954eb",
+				"dweb:/ipfs/QmX9Gru6CPy3SUmZgzxjfPKBVAkqWjde3VZDy3ZwWpB3SK"
+			]
+		},
+		"contracts/WorldStep/Counters.sol": {
+			"keccak256": "0xa5475bfef4f0c9a91bffbb7c47a345bcc19aa1ff0b3a15d8d378757892ac4619",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://321e765e082d848df1bf4f1e924d162887d48b12aa6d7a1514ac4b960cbf4a78",
+				"dweb:/ipfs/Qmbva1AGTuZFsf9C7FJXzjZBSRwJPpRCLFMNadvKtokvYu"
+			]
+		},
+		"contracts/WorldStep/ERC165.sol": {
+			"keccak256": "0xa7675a6d9bdc2770a719ef113b77a49c2e686aac158a35998e46438b4f792216",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a9882f85018072dbb0487b1ec4f8417b088da13ca5b349a5270ed08c71577a75",
+				"dweb:/ipfs/QmSL12C44p8YHJzFbWRHhPv3G8RKi8KXMc3JacEeWfMN5n"
+			]
+		},
+		"contracts/WorldStep/ERC721.sol": {
+			"keccak256": "0x4be83215a2b4f08e3d7595023089040b4c368a72ee1076cbc8d6783ab827c868",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://bbdcefaab408f909e2589aace3939b202ad55b34348f332599fa9c7e7f338d44",
+				"dweb:/ipfs/QmckdQYedUMQGcdXsYV4pqP9pu41NCuUDpoM7P83Hntdi4"
+			]
+		},
+		"contracts/WorldStep/ERC721Burnable.sol": {
+			"keccak256": "0xff9feb9fe1f2c594b6d927eb39ed9ae8e4d082891581116eeb484ca5420bd0e0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ccf2ee73795fed324763f13b666c4d5c9c708c3156ea7f25f242e897179f449",
+				"dweb:/ipfs/Qmafy8hPCnzgTsJuPAiueotdUTh58RhYN61fCiX5qo8Wum"
+			]
+		},
+		"contracts/WorldStep/ERC721Enumerable.sol": {
+			"keccak256": "0x130afbf03759fe8d6615ad3e977b26ead89c5985351c0bd5d78f7a512fb71ebe",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b9d1de3d4e9528762eb4960c7f10ae50c0d80c054221dc2bfaf6b144a10b0f78",
+				"dweb:/ipfs/QmeqneJX1rUtf2sbHSf5BwnmPLkwXFm1BRKwdnr98HgmQ3"
+			]
+		},
+		"contracts/WorldStep/ERC721URIStorage.sol": {
+			"keccak256": "0x753a6d3345a891caa1c379671308cf4bc139262980955093d925663a9b7fc390",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://869abdabf76e28e4c4bdaeb011321aa86bef70a80278bb5464299576d31a4163",
+				"dweb:/ipfs/QmQFWSTqTmprtBYa4CT29HxWbiHnyHMF9q2zJUAm72tFQQ"
+			]
+		},
+		"contracts/WorldStep/FactoryStorage.sol": {
+			"keccak256": "0xc67086748b8107424142629a1b30f5eb5e3db045aa18b3bf296895a153e72795",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://be3a98e63854fd1428340cc13c6aa108ac8ead6c214bcc1c4f760ee77d92521c",
+				"dweb:/ipfs/QmXxDb3peUhQE2eAYMobwLzghugzhWbrEaHkQeUwEs8Q3U"
+			]
+		},
+		"contracts/WorldStep/IERC165.sol": {
+			"keccak256": "0xa36a31b4bb17fad88d023474893b3b895fa421650543b1ce5aefc78efbd43244",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0f235b9175d95111f301d729566e214c32559e55a2b0579c947484748e20679d",
+				"dweb:/ipfs/QmSsNBuPejy1wNe2u3JSt2p9wFhrjvBjFrnAaNe1nDNkEA"
+			]
+		},
+		"contracts/WorldStep/IERC721.sol": {
+			"keccak256": "0x2bafd2b210b62dab214f0ca6fc4a017e7d3a074b55a575f79774d33cbb1ef062",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c22fcd4ad1ca48aa1b6c62bd5685088d5a6ed3216dae2decb0b8a771e8ce4a7f",
+				"dweb:/ipfs/QmXyiVqjmSXJBE9U7icCrN4LAAbx9TmZTbA7SNNZ8pgETd"
+			]
+		},
+		"contracts/WorldStep/IERC721Enumerable.sol": {
+			"keccak256": "0x70425e4b2a4451fa570f8a98b73014602e175dda0c8ce712b96e81f23fb8c047",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d0dbc178d7d1b3e5417a992b7620a9a99af8c46ebaed230a2c5501e7ab0d0bbe",
+				"dweb:/ipfs/QmNTFCW3CHW4sqZgoxFSQvjihyDfMZXenTT5Y9XsbRoeEN"
+			]
+		},
+		"contracts/WorldStep/IERC721Metadata.sol": {
+			"keccak256": "0x23e882d3b074890de42e57af24d0a860eb341e04778a8f15f1a2ed90007b3499",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a3d84ff3c7e4f7739dd5d3528c571310c76c11da07c20e1aa70bfb1d82dd5d29",
+				"dweb:/ipfs/QmV5sGjniV5qVa5jEwhQAD82i4j2tJ8pzHPrQvUbs6jhNb"
+			]
+		},
+		"contracts/WorldStep/IERC721Receiver.sol": {
+			"keccak256": "0xc66c39db95b4f7b0c01f9ae6585a9bbc6d8415d7be14db9dfd871b8bd671f7e4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e6cd8d0fb37823a820754b93cb6a7c32cd13fd6f98190515bb7d4a086ac88833",
+				"dweb:/ipfs/Qmc14KrMucFrkykM4KJAfGK4BkCFJyZvkzDzoHhPucEgqC"
+			]
+		},
+		"contracts/WorldStep/Ownable.sol": {
+			"keccak256": "0x28adb5f006cef52b73b613db99d0bc113d7b129a021e594dfdcf50225f260b3f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3789666515f95aea6d9d3ebdbc25d7434182ba5599a7c2823ddd51bc5b6a0174",
+				"dweb:/ipfs/QmSjW9pxWLnwqYKptEVQkxB8UWk99HuDGMZa6NjMBFoy5o"
+			]
+		},
+		"contracts/WorldStep/Pausable.sol": {
+			"keccak256": "0x9e1b993a4e508c726b7640c483de94e9c984735a4a40168c1e2ba154041fb925",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d2271b3c2ddcbb47879a6de3d1ae50c7771a875cefc4d1a580f6f0d1af7e0f4f",
+				"dweb:/ipfs/QmSDuNgGS4zLj5ZLwdyszNXKGpfWeUo5bvnyG2UrmSCjdS"
+			]
+		},
+		"contracts/WorldStep/Roleable.sol": {
+			"keccak256": "0x6bd0d83a385ecb65efcd69a55926e9c0a763c670a9a4ca8fda6446beb55519ee",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a7094d6fe9b0cebe6057580223fe5d54c0bf6b846698d3fdf267e44e00d599a6",
+				"dweb:/ipfs/QmctejvXgW32a5pbH6TdCFWN1gX8vKDGWrfTA9uR5RBnSp"
+			]
+		},
+		"contracts/WorldStep/SQFIFactory.sol": {
+			"keccak256": "0x8a129e631062c8146ac8b0c41dc0de176a37a40a1c70cb29f1a40924a3592f07",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ca0e8288f6405bca904a12f7a19a83a6ca51a65a9afe7c68d1b20ba9f0d12098",
+				"dweb:/ipfs/QmX4BixH5gSXdrQWDyLyyVeNmYE5JQGHT6mTzQieWfscrS"
+			]
+		},
+		"contracts/WorldStep/SQFNFT.sol": {
+			"keccak256": "0x2c36fb922c8a6e317cfa4b72503cfbc0349064e5b21983c4f907b3c2b2e2b6e8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://81563f63d7ad16b801d2acab7d8dbb91aaa621d413dfc6454cc51ad89620ae55",
+				"dweb:/ipfs/Qmf321qYqLYnLabdwooso72cokxFsRQ6okAUH1Dj6mT1MR"
+			]
+		},
+		"contracts/WorldStep/Strings.sol": {
+			"keccak256": "0x36af8f8be523e084c3ed6932ee5c0a7f038f663d8f1c185f77a810a43e3ae1cf",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://96fa73b388e04aafcebe0d82f8e5d3a072eddc91e09ee82be6dbeaad05370f6c",
+				"dweb:/ipfs/QmfEn7ttDhAHaApZHMb3XT7tA1M2SU5Rvqk3iKER7U2Pxf"
+			]
+		}
+	},
+	"version": 1
+}

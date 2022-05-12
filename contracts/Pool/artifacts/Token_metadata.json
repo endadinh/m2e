@@ -87,11 +87,11 @@
 	},
 	"sources": {
 		"contracts/Pool/Pool.sol": {
-			"keccak256": "0xc09a3acf815fc56be2cc4551459ab1bb49efa0910cca711fe5eeb3103901be8d",
+			"keccak256": "0x57dca683be2433375b9375973fc2db72eaa7000a6135a04e0773622c7c91668c",
 			"license": "Unlicensed",
 			"urls": [
-				"bzz-raw://cc580e1118f842bbdb0ce3ba39b60c56f7c5d04a8b7c2dd7bcd84a1ecc8f8505",
-				"dweb:/ipfs/QmXHPnDgdCoZMwgaDfnPWLtkf3kf49HkGxQ4gPzU1ct27v"
+				"bzz-raw://e8f824539f3a9ac5b06cb883a5d7ebb72c0cba84fd06b954aa17948e0409545f",
+				"dweb:/ipfs/QmZqQHrCxDGmvMUPt2YWb1cJeiotEZ45dtoxpUT9LS1zSD"
 			]
 		}
 	},

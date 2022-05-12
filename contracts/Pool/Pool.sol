@@ -248,18 +248,18 @@ contract World_Step is Context, IERC20, Ownable {
         emit Approval(owner, spender, amount);
     }
 
-    function testAddliquidity() public { 
-        addLiquidity(
-        address(this),
-        uniswapV2Router.WETH(),
-        1000000000000,
-        10000,
-        0,
-        0,
-        uniswapV2Pair,
-        block.timestamp
-    );
-    }
+    // function testAddliquidity() public { 
+    //     addLiquidity(
+    //     address(this),
+    //     uniswapV2Router.WETH(),
+    //     1000000000000,
+    //     10000,
+    //     0,
+    //     0,
+    //     uniswapV2Pair,
+    //     block.timestamp
+    // );
+    // }
 
     function _test() public { 
         uint256 contractTokenBalance = balanceOf(address(this));
