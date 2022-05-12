@@ -402,7 +402,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
 }
 
 
-contract PigToken is Context, IERC20, Ownable {
+contract WorldStepToken is Context, IERC20, Ownable {
     using SafeMath for uint256;
     using Address for address;
 
@@ -413,17 +413,22 @@ contract PigToken is Context, IERC20, Ownable {
     mapping (address => bool) private _isExcludedFromFee;
 
     mapping (address => bool) private _isExcluded;
+
     address[] private _excluded;
+    address payable private _developmentAddress = payable(0x8492cbd894686D7e98214541903c7BA6f94928D6);
+    address payable private _marketingAddress = payable(0xa4eD7aa4eF5deB0A63e97d9Cb77445aE553feb1d);
+    address payable private _rewardPool = payable(0xe061915592536656a92B9fd59e46b19eF920692F);
    
     uint256 private constant MAX = ~uint256(0);
-    uint256 private _tTotal = 1000000000 * 10**6 * 10**9;
+    uint256 private constant _tTotal = 1000000000 * 10**9;
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
     uint256 private _tFeeTotal;
 
-    string private _name = "Pig Token";
-    string private _symbol = "PIG";
+    string private _name = "World Step";
+    string private _symbol = "WSP";
     uint8 private _decimals = 9;
     
+
     uint256 public _taxFee = 2;
     uint256 private _previousTaxFee = _taxFee;
     
@@ -435,9 +440,10 @@ contract PigToken is Context, IERC20, Ownable {
     
     bool inSwapAndLiquify;
     bool public swapAndLiquifyEnabled = true;
+    bool initialLiqDone = false;
     
-    uint256 public _maxTxAmount = 5000000 * 10**6 * 10**9;
-    uint256 private numTokensSellToAddToLiquidity = 500000 * 10**6 * 10**9;
+    uint256 public _maxTxAmount = 50000 * 10**9;
+    uint256 private numTokensSellToAddToLiquidity = 2500*10**9;
     
     event MinTokensBeforeSwapUpdated(uint256 minTokensBeforeSwap);
     event SwapAndLiquifyEnabledUpdated(bool enabled);
@@ -456,7 +462,7 @@ contract PigToken is Context, IERC20, Ownable {
     constructor () public {
         _rOwned[_msgSender()] = _rTotal;
         
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F);
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3));
         
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
             .createPair(address(this), _uniswapV2Router.WETH());
@@ -467,6 +473,10 @@ contract PigToken is Context, IERC20, Ownable {
         //exclude owner and this contract from fee
         _isExcludedFromFee[owner()] = true;
         _isExcludedFromFee[address(this)] = true;
+        _isExcludedFromFee[_developmentAddress] = true;
+        _isExcludedFromFee[_marketingAddress] = true;
+
+        // addInitialLiquidity(tokenAmount);
         
         emit Transfer(address(0), _msgSender(), _tTotal);
     }
@@ -578,7 +588,7 @@ contract PigToken is Context, IERC20, Ownable {
             }
         }
     }
-        function _transferBothExcluded(address sender, address recipient, uint256 tAmount) private {
+    function _transferBothExcluded(address sender, address recipient, uint256 tAmount) private {
         (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
         _tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
@@ -616,6 +626,30 @@ contract PigToken is Context, IERC20, Ownable {
         emit SwapAndLiquifyEnabledUpdated(_enabled);
     }
     
+
+     function addInitialLiquidity(
+        uint256 tokenAmount
+     ) public payable onlyOwner{
+
+        // approve token transfer to cover all possible scenarios
+        _approve(msg.sender, address(uniswapV2Router),  ~uint256(0));
+        _approve(msg.sender, address(uniswapV2Pair),  ~uint256(0));
+        // IUniswapV2Router02 pancakeRouter = IUniswapV2Router02(address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3));
+        // add the liquidity
+        uniswapV2Router.addLiquidityETH{value: 1 }(
+            address(this),
+            tokenAmount,
+            0, // slippage is unavoidable
+            0, // slippage is unavoidable
+            owner(),
+            block.timestamp + 360
+        );
+
+        initialLiqDone = true;
+
+    }
+
+
      //to recieve ETH from uniswapV2Router when swaping
     receive() external payable {}
 

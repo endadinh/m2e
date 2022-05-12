@@ -431,60 +431,60 @@ contract AccountFrozenBalances {
 }
 
 pragma solidity ^0.6.0;
-contract Meltable {
-    mapping (address => bool) private _melters;
-    address private _melteradmin;
-    address public pendingMelterAdmin;
+contract Mintable {
+    mapping (address => bool) private _minters;
+    address private _minterAdmin;
+    address public pendingMinterAdmin;
 
-    modifier onlyMelterAdmin() {
-        require (msg.sender == _melteradmin, "caller not a melter admin");
+    modifier onlyMinterAdmin() {
+        require (msg.sender == _minterAdmin, "caller not a melter admin");
         _;
     }
 
-    modifier onlyMelter() {
-        require (_melters[msg.sender] == true, "can't perform melt");
+    modifier onlyMinter() {
+        require (_minters[msg.sender] == true, "can't perform melt");
         _;
     }
 
-    modifier onlyPendingMelterAdmin() {
-        require(msg.sender == pendingMelterAdmin, "caller not a pending melter admin");
+    modifier onlyPendingMinterAdmin() {
+        require(msg.sender == pendingMinterAdmin, "caller not a pending melter admin");
         _;
     }
 
-    event MelterTransferred(address indexed previousMelter, address indexed newMelter);
+    event MinterTransferred(address indexed previousMinter, address indexed newMinter);
 
     constructor () internal {
-        _melteradmin = msg.sender;
-        _melters[msg.sender] = true;
+        _minterAdmin = msg.sender;
+        _minters[msg.sender] = true;
     }
 
-    function melteradmin() public view returns (address) {
-        return _melteradmin;
+    function minteradmin() public view returns (address) {
+        return _minterAdmin;
     }
 
-    function addToMelters(address account) public onlyMelterAdmin {
-        _melters[account] = true;
+    function addToMinters(address account) public onlyMinterAdmin {
+        _minters[account] = true;
     }
 
-    function removeFromMelters(address account) public onlyMelterAdmin {
-        _melters[account] = false;
+    function removeFromMinters(address account) public onlyMinterAdmin {
+        _minters[account] = false;
     }
 
-    function transferMelterAdmin(address newMelter) public onlyMelterAdmin {
-        pendingMelterAdmin = newMelter;
+    function transferMinterAdmin(address newMinter) public onlyMinterAdmin {
+        pendingMinterAdmin = newMinter;
     }
 
-    function claimMelterAdmin() public onlyPendingMelterAdmin {
-        emit MelterTransferred(_melteradmin, pendingMelterAdmin);
-        _melteradmin = pendingMelterAdmin;
-        pendingMelterAdmin = address(0);
+    function claimMinterAdmin() public onlyPendingMinterAdmin {
+        emit MinterTransferred(_minterAdmin, pendingMinterAdmin);
+        _minterAdmin = pendingMinterAdmin;
+        pendingMinterAdmin = address(0);
     }
 }
 
 // File: @openzeppelin/contracts/token/ERC20/ERC20.sol
 
 pragma solidity ^0.6.0;
-contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
+contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Mintable {
 	using SafeMath for uint256;
 	using Address for address;
 
@@ -508,10 +508,11 @@ contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
 	 * All three of these values are immutable: they can only be set once during
 	 * construction.
 	 */
+
 	constructor (string memory name, string memory symbol, uint256 max, uint total) public {
 		_name = name;
 		_symbol = symbol;
-		_decimals = 6;
+		_decimals = 9;
 		_maxSupply = max;
 		_totalSupply = total;
 		_balances[address(msg.sender)] = total;
@@ -578,9 +579,7 @@ contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
 	function _transfer(address sender, address recipient, uint256 amount) internal virtual {
 		require(sender != address(0), "ERC20: transfer from the zero address");
 		require(recipient != address(0), "ERC20: transfer to the zero address");
-
-		_beforeTokenTransfer(sender, recipient, amount);
-
+		_beforeTokenTransfer(sender, amount);
 		_balances[sender] = _balances[sender].sub(amount, "ERC20: transfer amount exceeds balance");
 		_balances[recipient] = _balances[recipient].add(amount);
 		emit Transfer(sender, recipient, amount);
@@ -589,7 +588,7 @@ contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
 	function _mint(address account, uint256 amount) internal virtual {
 		require(account != address(0), "ERC20: mint to the zero address");
 
-		_beforeTokenTransfer(address(0), account, amount);
+		// _beforeTokenTransfer(address(0), amount);
 
 		_totalSupply = _totalSupply.add(amount);
 		_balances[account] = _balances[account].add(amount);
@@ -599,7 +598,7 @@ contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
 	function _burn(address account, uint256 amount) internal virtual {
 		require(account != address(0), "ERC20: burn from the zero address");
 
-		_beforeTokenTransfer(account, address(0), amount);
+		_beforeTokenTransfer(account,  amount);
 
 		_balances[account] = _balances[account].sub(amount, "ERC20: burn amount exceeds balance");
 		_totalSupply = _totalSupply.sub(amount);
@@ -618,7 +617,7 @@ contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
 		_decimals = decimals_;
 	}
 
-	function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual {
+	function _beforeTokenTransfer(address from, uint256 amount) internal virtual {
 		require(_balances[from] >= amount, "ERC20: transfer amount exceeds balance");
 	}
 	
@@ -670,33 +669,31 @@ contract ERC20 is Context, IERC20, AccountFrozenBalances, Ownable, Meltable {
 pragma solidity 0.6.12;
 
 // Token with Governance.
-contract World_Step is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) {
+contract World_Step is ERC20("World Step", "WSP", 10000*10**9*10**6, 1*10**9*10**6) {
 	
-    address payable private _developmentAddress = payable(0x8492cbd894686D7e98214541903c7BA6f94928D6);
-    address payable private _marketingAddress = payable(0xa4eD7aa4eF5deB0A63e97d9Cb77445aE553feb1d);
-    address payable private _rewardPool = payable(0xe061915592536656a92B9fd59e46b19eF920692F);
+    address payable private _developmentAddress = payable(address(0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2));
+    address payable private _marketingAddress = payable(address(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db));
+    address payable private _rewardPool = payable(address(0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB));
+	address payable private _liquidityPool = payable(address(0x617F2E2fD72FD9D5503197092aC168c91465E7f2));
 
-	uint256 public transferFeeRateBuy;
-	uint256 public transferFeeRateSell;
+	uint256 public transferFeeRate;
+	uint256 public transferFeeSellRWP;
+	uint256 public transferFeeBuyLP;
+	uint256 public transferFeeBuyMKT;
+	uint256 public transferFeeBuyDEV;
+	uint256 public transferFeeBuyRWP;
 
 	
     mapping(address => bool) private _transactionFee;
     mapping (address => bool) private _isExcludedFromFee;
 
 
-
-	IUniswapV2Router02 public uniswapV2Router;
-    IUniswapV2Factory public uniswapV2Factory;
-
-    address public _factory;
-    address public uniswapV2Pair;
-
 	/**
 	 * @dev See {ERC20-_beforeTokenTransfer}.
 	 */
 
-	function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
-		super._beforeTokenTransfer(from, to, amount);
+	function _beforeTokenTransfer(address from,  uint256 amount) internal virtual override {
+		super._beforeTokenTransfer(from,  amount);
 		
 	    if (from == address(0)) { // When minting tokens
 			require(totalSupply().add(amount) <= maxSupply(), "ERC20Capped: max supply exceeded");
@@ -705,8 +702,8 @@ contract World_Step is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) 
 	}
 
 	function _transfer(address sender, address recipient, uint256 amount) internal virtual override {
-	    if (transferFeeRateBuy > 0 && _transactionFee[recipient] == true && recipient != address(0) && _developmentAddress != address(0)) {
-			uint256 _feeamount = amount.mul(transferFeeRateBuy).div(100);
+	    if (transferFeeRate > 0 && _transactionFee[recipient] == true && recipient != address(0) && _developmentAddress != address(0)) {
+			uint256 _feeamount = amount.mul(transferFeeRate).div(100);
 			super._transfer(sender, _developmentAddress, _feeamount); // TransferFee
 			amount = amount.sub(_feeamount);
 		}
@@ -714,6 +711,54 @@ contract World_Step is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) 
 		super._transfer(sender, recipient, amount);
 	}
 
+	function _transferSell(address sender, address recipient, uint256 amount) internal virtual{
+	    if (transferFeeSellRWP > 0 && recipient != address(0) && _rewardPool != address(0)) {
+			_beforeTokenTransfer(sender,amount);
+			uint256 _feeamount = amount.mul(transferFeeSellRWP).div(100);
+			super._transfer(sender, _rewardPool, _feeamount); // TransferFee
+			amount = amount.sub(_feeamount);
+		}
+		super._transfer(sender, recipient, amount);
+	}
+
+	function _transferBuy(uint256 amount) internal virtual {
+			uint256 taxAmount = 0;
+	    if (transferFeeBuyLP > 0 && address(msg.sender) != address(0) && _liquidityPool != address(0)) {
+			uint256 _feeamountLP = amount.mul(transferFeeBuyLP).div(100);
+			// super._transfer(sender, _liquidityPool, _feeamountLP); // TransferFee
+			_mint(_liquidityPool,_feeamountLP);
+			taxAmount = taxAmount.add(_feeamountLP);
+		}
+		 if (transferFeeBuyDEV > 0 && address(msg.sender) != address(0) && _developmentAddress != address(0)) {
+			uint256 _feeamountDEV = amount.mul(transferFeeBuyDEV).div(100);
+			// super._transfer(sender, _developmentAddress, _feeamountDEV); // TransferFee
+			_mint(_developmentAddress,_feeamountDEV);
+			taxAmount = taxAmount.add(_feeamountDEV);
+
+		}
+		 if (transferFeeBuyMKT > 0 && address(msg.sender) != address(0) && _marketingAddress != address(0)) {
+			uint256 _feeamountMKT = amount.mul(transferFeeBuyMKT).div(100);
+			// super._transfer(sender, _marketingAddress, _feeamountMKT); // TransferFee
+			_mint(_marketingAddress,_feeamountMKT);
+			taxAmount = taxAmount.add(_feeamountMKT);
+		}
+		 if (transferFeeBuyRWP > 0 && address(msg.sender) != address(0) && _rewardPool != address(0)) {
+			uint256 _feeamountRWP = amount.mul(transferFeeBuyRWP).div(100);
+			// super._transfer(sender, _rewardPool, _feeamountRWP); // TransferFee
+			_mint(_rewardPool,_feeamountRWP);
+			taxAmount = taxAmount.add(_feeamountRWP);
+		}
+		amount = amount.sub(taxAmount);
+		// super._transfer(sender, recipient, amount);
+		_mint(msg.sender,amount);
+	}
+	function BuyTest(uint256 amount) public virtual onlyMinter { 
+		_transferBuy(amount);
+	}
+	function SellTest(address recipient, uint256 amount) public virtual onlyMinter { 
+		_approve(msg.sender,recipient,amount);
+		_transferSell(msg.sender,recipient,amount);
+	}
 	/// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
 	function mint(address _to, uint256 _amount) public onlyOwner {
 		_mint(_to, _amount);
@@ -732,12 +777,12 @@ contract World_Step is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) 
 		return true;
 	}
 	
-	function mintFrozenTokens(address account, uint256 amount) public onlyMelter returns (bool) {
+	function mintFrozenTokens(address account, uint256 amount) public onlyMinter returns (bool) {
         _mintfrozen(account, amount);
         return true;
     }
 	
-	function transferFrozenToken(address from, address to, uint256 amount) public onlyMelter returns (bool) {
+	function transferFrozenToken(address from, address to, uint256 amount) public onlyMinter returns (bool) {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
 
@@ -750,12 +795,12 @@ contract World_Step is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) 
         return true;
     }
     
-    function meltTokens(address account, uint256 amount) public onlyMelter returns (bool) {
+    function meltTokens(address account, uint256 amount) public onlyMinter returns (bool) {
         _melt(account, amount);
         return true;
     }
     
-    function destroyFrozen(address account, uint256 amount) public onlyMelter {
+    function destroyFrozen(address account, uint256 amount) public onlyMinter {
         _burnFrozen(account, amount);
     }
     
@@ -771,23 +816,106 @@ contract World_Step is ERC20("World Step", "WSP", 1*10**9*10**6, 1*10**9*10**6) 
 	// 	feeaddr = _feeaddr;
     // }
     
-    function setTransferFeeRateBuy(uint256 _rate) public onlyOwner {
-		transferFeeRateBuy = _rate;
-    }
-	  function setTransferFeeRateSeel(uint256 _rate) public onlyOwner {
-		transferFeeRateSell = _rate;
-    }
+    // function setTransferFeeRateBuy(uint256 _rate) public onlyOwner {
+	// 	transferFeeRateBuy = _rate;
+    // }
+	//   function setTransferFeeRateSeel(uint256 _rate) public onlyOwner {
+	// 	transferFeeRateSell = _rate;
+    // }
+
+	// function swapTokensForEth(uint256 tokenAmount) private {
+    //     address[] memory path = new address[](2);
+    //     path[0] = address(this);
+    //     path[1] = uniswapV2Router.WETH();
+    //     _approve(address(this), address(uniswapV2Router), tokenAmount);
+    //     uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(
+    //         tokenAmount,
+    //         0,
+    //         path,
+    //         address(this),
+    //         block.timestamp
+    //     );
+    // }
+
+	// function _actionBuy(address buyer, uint tokenAmount) private { 
+	// 	uint256 feeToMkt = tokenAmount.div(100);
+	// 	uint256 feeToDev = tokenAmount.div(100);
+	// 	uint256 feeToLP = tokenAmount.div(100);
+	// 	uint256 feeToPR = tokenAmount.div(100);
+	// 	uint256 tokenToEth = feeToLP.div(2);
+	// 	_mint(_marketingAddress,feeToMkt);
+	// 	_mint(_developmentAddress, feeToDev);
+	// 	_mint(_rewardPool, feeToPR);
+	// 	swapTokensForEth(tokenToEth);
+	// }
 
 	constructor() public {
-		transferFeeRateBuy = 4;
-		transferFeeRateSell = 1;
-		 IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3));
-        uniswapV2Router = _uniswapV2Router;
-        uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
-            .createPair(address(this), _uniswapV2Router.WETH() );
+		transferFeeRate = 0;
+		transferFeeBuyLP = 1;
+		transferFeeBuyDEV = 1;
+		transferFeeBuyMKT = 1;
+		transferFeeBuyRWP = 1;
+		transferFeeSellRWP =1;
+		//  IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3));
+        // uniswapV2Router = _uniswapV2Router;
+        // uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
+        //     .createPair(address(this), _uniswapV2Router.WETH() );
         _isExcludedFromFee[owner()] = true;
         _isExcludedFromFee[address(this)] = true;
         _isExcludedFromFee[_developmentAddress] = true;
         _isExcludedFromFee[_marketingAddress] = true;
 	}
+}
+
+
+pragma solidity ^0.6.12;
+
+contract Token_PreSale is Ownable {
+    using SafeMath for uint256;
+	using Address for address;
+
+	// IERC20 public _BUSD;
+    World_Step public _tokenPresale;
+	uint256 public _maxTokenSale;
+	uint256 public _saledToken;
+	bool public _saleStatus;
+	uint256 public _tokenPrice;  // token pre-sale price in BNB
+	uint256 public _endSaleBlock ;
+    mapping(address => uint256) public buyedToken;
+	mapping(address => uint256) public buyedBNB;
+
+    constructor(address _token) public {
+		// _BUSD = IERC20(address(0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee));
+		_tokenPresale = World_Step(_token) ;
+		_maxTokenSale = 25*10**7*10**6;
+		_saledToken = 0;
+		_saleStatus = true;
+		_tokenPrice = 38 * 10 ** 12;
+		_endSaleBlock = block.timestamp.add(2*60*60);
+	}
+
+	function buy_PreSale() public payable {
+		require(_endSaleBlock > block.timestamp , "Pre-sale ended .");
+		require(_saledToken < _maxTokenSale , "Token soled out .");
+		require(buyedBNB[msg.sender] < 20*10**18 , "Limit BNB buyed .");
+		uint256 totalToken = msg.value.div(_tokenPrice);
+		_tokenPresale.BuyTest(totalToken);
+		address payable owner = payable(this.owner());
+			owner.transfer(msg.value);
+		_saledToken = _saledToken.add(totalToken * 10 ** 9);
+		buyedToken[msg.sender] = buyedToken[msg.sender].add(totalToken * 10 ** 9);
+		buyedBNB[msg.sender] = buyedBNB[msg.sender].add(msg.value);
+		emit Buy_PreSale(address(0), totalToken);
+	}    
+
+	function set_Price(uint256 tokenPrice) public onlyOwner {
+		_tokenPrice = tokenPrice;
+	}
+
+	function set_SaleStatus(bool saleStatus) public onlyOwner {
+		_saleStatus = saleStatus;
+	}
+    
+    event Buy_PreSale(address indexed user, uint256 amount);
+
 }

@@ -33,11 +33,11 @@
 	},
 	"sources": {
 		"contracts/Token/Token.sol": {
-			"keccak256": "0xf0fd996a328d50dff8b550d5c8de707385353e9f36931c88306e8dc895d031c9",
+			"keccak256": "0x1169424be47921bf4141ea13c3add364fa8373e4e39db44d64728178e919e3b2",
 			"license": "Unlicensed",
 			"urls": [
-				"bzz-raw://64d021f1977fa1c796a86a028779d77a0ed48b5a4a14d028d594c7449e959e83",
-				"dweb:/ipfs/QmcGWc5p4FnFco98vxpdyPLfcaTSuRfmNjo3dM3edtH7JX"
+				"bzz-raw://0fe4778e67726cf235e6494f7275cd80e98299e03345fff53c38898e3115900e",
+				"dweb:/ipfs/QmSTku2F2bHVGkpxYUBs7GTT19eA4ZJHQDMYoZ9q887uq4"
 			]
 		}
 	},

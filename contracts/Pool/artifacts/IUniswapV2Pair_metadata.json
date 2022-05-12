@@ -685,11 +685,11 @@
 	},
 	"sources": {
 		"contracts/Pool/PoolPig.sol": {
-			"keccak256": "0x6896945bf4a4d4813bf6a1dee8e8a410d3783fa4ea7c27ad3800ca089c7c3a68",
+			"keccak256": "0x0be47c0202d6a0832d1fafb84223feb0d7612d02fe640c5efa2f26a668c11bb0",
 			"license": "Unlicensed",
 			"urls": [
-				"bzz-raw://15ace6ebe3f99929f68a56503dc990ffbb937ddfc46fe70cceefa20318e29ee7",
-				"dweb:/ipfs/QmU9MNAm9pN6k2mhQSLF13za56oHcKih9NSfCCN2za92Du"
+				"bzz-raw://7b5457d8f869085b20c1cb00d1933014d278bdb69e646fb7d26d46604e2e995f",
+				"dweb:/ipfs/QmW3iBk558uYPrSFwhKy1jzR71dYGjWnXEomwwfqVezAFZ"
 			]
 		}
 	},
