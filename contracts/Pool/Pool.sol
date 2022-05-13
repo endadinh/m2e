@@ -308,7 +308,15 @@ contract World_Step is Context, IERC20, Ownable {
 
         _tokenTransfer(from,to,amount);
     }
-
+uint256 delta = block.timestamp.sub(_lastSellTime[sender]);
+                // if (delta > 0 && delta < _whaleSellTimer && _lastSellTime[sender] != 0 && _numberOfSells[sender] != 0) {
+                //     if (_numberOfSells[sender]==1) {
+                //         _sellMarketingFee = _secondSellMarketingFee;
+                //         _totalMarketingFee = _sellMarketingFee.add(_buyMarketingFee);
+                //         _totalTaxIfSelling = _sellLiquidityFee.add(_sellMarketingFee);
+…                //     _lastSellTime[sender] = block.timestamp;
+                //     _numberOfSells[sender] = _numberOfSells[sender].add(1);
+                // }
     function swapTokensForEth(uint256 tokenAmount) private lockTheSwap {
         address[] memory path = new address[](2);
         path[0] = address(this);

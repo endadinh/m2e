@@ -18,7 +18,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Pool/Pool.sol": "SafeMath"
+			"contracts/Pool/PoolPig.sol": "SafeMath"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -32,12 +32,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Pool/Pool.sol": {
-			"keccak256": "0x57dca683be2433375b9375973fc2db72eaa7000a6135a04e0773622c7c91668c",
+		"contracts/Pool/PoolPig.sol": {
+			"keccak256": "0x3aa1043b2df2cd9fcabc64a2f3498ef6c621c5d8ce5dd184db3efb2d76844d81",
 			"license": "Unlicensed",
 			"urls": [
-				"bzz-raw://e8f824539f3a9ac5b06cb883a5d7ebb72c0cba84fd06b954aa17948e0409545f",
-				"dweb:/ipfs/QmZqQHrCxDGmvMUPt2YWb1cJeiotEZ45dtoxpUT9LS1zSD"
+				"bzz-raw://df3b4cd05b250545d6dda52191ffb941894736812d0cfd6ad395d0577561f98d",
+				"dweb:/ipfs/QmP7FC8etrt8Ra9Cv4m581zu5hHUBj2eCrVG8rfgXvQdvk"
 			]
 		}
 	},
