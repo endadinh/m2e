@@ -1,4 +1,21 @@
+/**
+ *Submitted for verification at BscScan.com on 2022-04-25
+*/
+
 // SPDX-License-Identifier: Unlicensed
+
+/*
+                                                               
+Baby Zeus is a community meme token with ownership will be removed. A safe and reliable project for all investors.
+
+Baby Zeus 是一个社区 meme 令牌，其所有权将被删除。 为所有投资者提供安全可靠的项目。
+
+*Website: https://babyzeus.club/
+*Twitter: https://twitter.com/1000xZeusBaby
+*Telegram: https://t.me/OfficialBabyZeus
+
+*/
+
 
 pragma solidity ^0.8.4;
 
@@ -40,16 +57,6 @@ interface IUniswapV2Router02 {
         address to,
         uint deadline
     ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
-    function addLiquidity(
-        address tokenA,
-        address tokenB,
-        uint amountADesired,
-        uint amountBDesired,
-        uint amountAMin,
-        uint amountBMin,
-        address to,
-        uint deadline
-    ) external returns (uint amountA, uint amountB, uint liquidity);
 }
 
 abstract contract Context {
@@ -130,14 +137,14 @@ contract Ownable is Context {
 
 }
 
-contract World_Step is Context, IERC20, Ownable {
+contract Baby_Zeus is Context, IERC20, Ownable {
     
     using SafeMath for uint256;
     mapping (address => uint256) private _rOwned;
     mapping (address => uint256) private _tOwned;
     mapping (address => mapping (address => uint256)) private _allowances;
     mapping (address => bool) private _isExcludedFromFee;
-
+    
     uint256 private constant MAX = ~uint256(0);
     uint256 private constant _tTotal = 1000000000 * 10**9;
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
@@ -152,21 +159,16 @@ contract World_Step is Context, IERC20, Ownable {
     uint256 private _redisFee;
     uint256 private _taxFee;
     
-    string private constant _name = "World Step";
-    string private constant _symbol = "WSP";
+    string private constant _name = "Baby Zeus";
+    string private constant _symbol = "BBZ";
     uint8 private constant _decimals = 9;
     
-    address payable private _developmentAddress = payable(0x8492cbd894686D7e98214541903c7BA6f94928D6);
-    address payable private _marketingAddress = payable(0xa4eD7aa4eF5deB0A63e97d9Cb77445aE553feb1d);
-    address payable private _rewardPool = payable(0xe061915592536656a92B9fd59e46b19eF920692F);
-
+    address payable private _developmentAddress = payable(0xbDE595320C1DB9DD22eec5899d160a6917ce0190);
+    address payable private _marketingAddress = payable(0xc15c0D92Ae37835dB93A9eC4413b9602331cF37b);
 
     IUniswapV2Router02 public uniswapV2Router;
-    IUniswapV2Factory public uniswapV2Factory;
-
-    address public _factory;
     address public uniswapV2Pair;
-
+    
     bool private inSwap = false;
     bool private swapEnabled = true;
     
@@ -175,21 +177,23 @@ contract World_Step is Context, IERC20, Ownable {
         _;
         inSwap = false;
     }
-    
     constructor () {
         _rOwned[_msgSender()] = _rTotal;
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3));
+        
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
-            .createPair(address(this), _uniswapV2Router.WETH() );
+            .createPair(address(this), _uniswapV2Router.WETH());
+
         _isExcludedFromFee[owner()] = true;
         _isExcludedFromFee[address(this)] = true;
         _isExcludedFromFee[_developmentAddress] = true;
         _isExcludedFromFee[_marketingAddress] = true;
-        emit Transfer(address(0), _msgSender(), _tTotal);
+
+        emit Transfer(address(0x0000000000000000000000000000000000000000), _msgSender(), _tTotal);
     }
 
-     modifier onlyDev() {	
+    modifier onlyDev() {	
         require(owner() == _msgSender() || _developmentAddress == _msgSender(), "Caller is not the dev");	
         _;	
     }
@@ -240,36 +244,11 @@ contract World_Step is Context, IERC20, Ownable {
         return rAmount.div(currentRate);
     }
 
-
     function _approve(address owner, address spender, uint256 amount) private {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
-    }
-
-    // function testAddliquidity() public { 
-    //     addLiquidity(
-    //     address(this),
-    //     uniswapV2Router.WETH(),
-    //     1000000000000,
-    //     10000,
-    //     0,
-    //     0,
-    //     uniswapV2Pair,
-    //     block.timestamp
-    // );
-    // }
-
-    function _test() public { 
-        uint256 contractTokenBalance = balanceOf(address(this));
-            if (contractTokenBalance > 0) {
-
-                swapTokensForEth(contractTokenBalance);
-
-            }
-
-
     }
 
     function _transfer(address from, address to, uint256 amount) private {
@@ -279,7 +258,9 @@ contract World_Step is Context, IERC20, Ownable {
         
         _redisFee = 0;
         _taxFee = 0;
+        
         if (from != owner() && to != owner()) {
+            
             uint256 contractTokenBalance = balanceOf(address(this));
             if (!inSwap && from != uniswapV2Pair && swapEnabled && contractTokenBalance > 0) {
                 swapTokensForEth(contractTokenBalance);
@@ -308,15 +289,7 @@ contract World_Step is Context, IERC20, Ownable {
 
         _tokenTransfer(from,to,amount);
     }
-uint256 delta = block.timestamp.sub(_lastSellTime[sender]);
-                // if (delta > 0 && delta < _whaleSellTimer && _lastSellTime[sender] != 0 && _numberOfSells[sender] != 0) {
-                //     if (_numberOfSells[sender]==1) {
-                //         _sellMarketingFee = _secondSellMarketingFee;
-                //         _totalMarketingFee = _sellMarketingFee.add(_buyMarketingFee);
-                //         _totalTaxIfSelling = _sellLiquidityFee.add(_sellMarketingFee);
-…                //     _lastSellTime[sender] = block.timestamp;
-                //     _numberOfSells[sender] = _numberOfSells[sender].add(1);
-                // }
+
     function swapTokensForEth(uint256 tokenAmount) private lockTheSwap {
         address[] memory path = new address[](2);
         path[0] = address(this);
