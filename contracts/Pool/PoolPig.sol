@@ -714,7 +714,7 @@ contract WorldStep is Context, IERC20, Ownable {
 
         emit AdminTokenRecovery(_tokenAddress, _tokenAmount, _recipient);
     }
-    
+
     receive() external payable {}
 
     function recoverBNB(address recipient, uint256 amount) external onlyOwner {
@@ -814,12 +814,26 @@ contract WorldStep is Context, IERC20, Ownable {
 
 
     function swapAndLiquify(uint256 tAmount) private lockTheSwap {
-        uint256 tokensForLP = tAmount.mul(_totalLiquidityFee).div(_totalTax);
-        uint256 tokensForMarketing = tAmount.mul(_totalMarketingFee).div(_totalTax);
-        uint256 tokensForDevelopment = tAmount.mul(_buyDevelopmentFee).div(_totalTax);
-        uint256 tokensForRewardPool = tAmount.mul(_totalRewardPoolFee).div(_totalTax);
-        uint256 tokensForSwap = (tokensForLP.div(2)).add(tokensForMarketing).add(tokensForDevelopment).add(tokensForRewardPool);
-        swapTokensForEth(tokensForSwap);
+
+        swapTokensForEth(tAmount);
+        
+        uint256 contractETHBalance = address(this).balance;
+        
+        if(contractETHBalance > 0 ) { 
+            uint256 mktAm = contractETHBalance.mul(_totalMarketingFee).div(_totalTax);
+            uint256 mktDev = contractETHBalance.mul(_totalDevelopmentFee).div(_totalTax);
+            uint256 mktLq = contractETHBalance.mul(_totalLiquidityFee).div(_totalTax);
+            // uint256 mktAm = contractETHBalance.mul(_totalMarketingFee).div(_totalTax);
+            _marketingAddress.transfer(mktAm);
+            _developmentAddress.transfer(mktDev);
+        }
+
+        // uint256 tokensForLP = tAmount.mul(_totalLiquidityFee).div(_totalTax);
+        // uint256 tokensForMarketing = tAmount.mul(_totalMarketingFee).div(_totalTax);
+        // uint256 tokensForDevelopment = tAmount.mul(_buyDevelopmentFee).div(_totalTax);
+        // uint256 tokensForRewardPool = tAmount.mul(_totalRewardPoolFee).div(_totalTax);
+        // uint256 tokensForSwap = tokensForLP.add(tokensForMarketing).add(tokensForDevelopment).add(tokensForRewardPool);
+        // swapTokensForEth(tokensForSwap);
     }
     
     function swapTokensForEth(uint256 tokenAmount) private {
@@ -857,5 +871,13 @@ contract WorldStep is Context, IERC20, Ownable {
 
     //     return amount.sub(feeAmount);
     // }
+
+
+    fuction getFee(address sender, address recipient, uint256 amount ) internal return (bool) { 
+        uint256 contractBalance = address(this).balance;
+        if(contractBalance >  0 )  { 
+            swapAndLiquify(contractBalace)
+        }
+    }
     
 }
