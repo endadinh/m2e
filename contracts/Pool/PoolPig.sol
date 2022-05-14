@@ -510,7 +510,7 @@ contract WorldStep is Context, IERC20, Ownable {
 
     uint256 public _totalLiquidityFee = _buyLiquidityFee;
     uint256 public _totalMarketingFee = _buyMarketingFee;
-    uint256 public _totalDevelopmentFee = _buyDevelopmentFee;
+    uint256 public _totalDevelopmentFee = _develop;
     uint256 public _totalRewardPoolFee = _buyRewardPoolFee + _sellRewardPoolFee;
 
     uint256 public _totalTaxIfBuying = _buyLiquidityFee + _buyMarketingFee + _buyRewardPoolFee + _buyDevelopmentFee;
@@ -714,7 +714,9 @@ contract WorldStep is Context, IERC20, Ownable {
 
         emit AdminTokenRecovery(_tokenAddress, _tokenAmount, _recipient);
     }
+    
     receive() external payable {}
+
     function recoverBNB(address recipient, uint256 amount) external onlyOwner {
         payable(recipient).transfer(amount);
     }
