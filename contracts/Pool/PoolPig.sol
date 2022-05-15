@@ -3,21 +3,16 @@
 */
 
 /*
-DEXTERA (DXTA) - A BEP-20 token on Binance smart chain
+World Step (WSP) - A BEP-20 token on Binance smart chain
 
 Fees:
 	-Buy
-		7% Marketing
-		3% LP
+		1% Reward Pool
 	-Sell
-		6% Marketing
-		7% LP
-
-Anti-Whale System:
-	1 week period for sells
-		Sell Total Fees +13% for second sell
-		Sell Total Fees +16% for third sell
-		Sell Total Fees +19% for fourth sell
+		1% Marketing
+		1% LP
+        1% Development
+        1% Reward Pool
 
 */
 // SPDX-License-Identifier: Unlicensed
@@ -486,8 +481,8 @@ contract WorldStep is Context, IERC20, Ownable {
     string private _symbol = "WSP";
     uint8 private _decimals = 9;
 
-    address public marketingWalletAddress = 0x8492cbd894686D7e98214541903c7BA6f94928D6; 
-    address public developmentWalletAddress = 0xa4eD7aa4eF5deB0A63e97d9Cb77445aE553feb1d; 
+    address payable public marketingWalletAddress = payable(0x8492cbd894686D7e98214541903c7BA6f94928D6); 
+    address payable public developmentWalletAddress = payable(0xa4eD7aa4eF5deB0A63e97d9Cb77445aE553feb1d); 
     address public rewardPoolWalletAddress = 0xe061915592536656a92B9fd59e46b19eF920692F; 
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
     
@@ -501,26 +496,19 @@ contract WorldStep is Context, IERC20, Ownable {
     mapping (address => bool) public isBlocked;
     mapping (address => bool) public canTrade;
 
-    uint256 private _buyLiquidityFee = 1;
-    uint256 public _buyMarketingFee = 1;
-    uint256 public _buyDevelopmentFee = 1;
-    uint256 public _buyRewardPoolFee = 1;
-    
+    uint256 private _sellLiquidityFee = 1;
+    uint256 public _sellMarketingFee = 1;
+    uint256 public _sellDevelopmentFee = 1;
     uint256 public _sellRewardPoolFee = 1;
+    
+    uint256 public _buyRewardPoolFee = 1;
 
-    uint256 public _totalLiquidityFee = _buyLiquidityFee;
-    uint256 public _totalMarketingFee = _buyMarketingFee;
-    uint256 public _totalDevelopmentFee = _develop;
-    uint256 public _totalRewardPoolFee = _buyRewardPoolFee + _sellRewardPoolFee;
-
-    uint256 public _totalTaxIfBuying = _buyLiquidityFee + _buyMarketingFee + _buyRewardPoolFee + _buyDevelopmentFee;
-    uint256 public _totalTaxIfSelling = _sellRewardPoolFee;
+    uint256 public _totalTaxIfSelling = _sellLiquidityFee + _sellMarketingFee + _sellRewardPoolFee + _sellDevelopmentFee;
+    uint256 public _totalTaxIfBuying = _buyRewardPoolFee;
     uint256 public _totalTax = _totalTaxIfBuying + _totalTaxIfSelling;
 
 
     uint256 private _totalSupply = 1000000000 *  10**_decimals;
-    uint256 public _maxBuyTxAmount = 700000 *  10**_decimals;
-    uint256 public _maxSellTxAmount = 200000 *  10**_decimals;
 
     IUniswapV2Router02 public uniswapV2Router;
     address public uniswapPair;
@@ -547,7 +535,7 @@ contract WorldStep is Context, IERC20, Ownable {
         address[] path
     );
 
-    event payTaxFee(address sender, address receiveTax, uint256 amount);
+    event AdminSendFee(address[] path);
 
     
     modifier lockTheSwap {
@@ -658,37 +646,26 @@ contract WorldStep is Context, IERC20, Ownable {
         isExcludedFromFee[account] = newValue;
     }
 
-    function setBuyTaxes(uint256 newLiquidityTax, uint256 newMarketingTax,uint256 newDevelopmentTax, uint256 newRewardPoolTax) external onlyOwner() {
-        _buyLiquidityFee = newLiquidityTax;
-        _buyMarketingFee = newMarketingTax;
-        _buyDevelopmentFee = newDevelopmentTax;
-        _buyRewardPoolFee = newRewardPoolTax;
-        _totalLiquidityFee = _buyLiquidityFee;
-        _totalMarketingFee = _buyMarketingFee;
-        _totalRewardPoolFee = _buyRewardPoolFee.add(_sellRewardPoolFee);
-        _totalDevelopmentFee = _buyDevelopmentFee;
-        _totalTaxIfBuying = _buyLiquidityFee.add(_buyMarketingFee).add(_buyRewardPoolFee).add(_buyRewardPoolFee);
-        _totalTax = _totalTaxIfBuying.add(_totalTaxIfSelling);
-    }
-
-    function setSellTaxes(uint256 newRewardPoolTax) external onlyOwner() {
+    function setSellTaxes(uint256 newLiquidityTax, uint256 newMarketingTax,uint256 newDevelopmentTax, uint256 newRewardPoolTax) external onlyOwner() {
+        _sellLiquidityFee = newLiquidityTax;
+        _sellMarketingFee = newMarketingTax;
+        _sellDevelopmentFee = newDevelopmentTax;
         _sellRewardPoolFee = newRewardPoolTax;
-        _totalRewardPoolFee = _buyRewardPoolFee.add(_sellRewardPoolFee);
-        _totalTaxIfSelling = _sellRewardPoolFee;
+        _totalTaxIfSelling = _sellLiquidityFee.add(_sellMarketingFee).add(_sellRewardPoolFee).add(_sellRewardPoolFee);
         _totalTax = _totalTaxIfSelling.add(_totalTaxIfBuying);
     }
-    
-    
-    function setSellMaxTxAmount(uint256 maxTxAmount) external onlyOwner() {
-        _maxSellTxAmount = maxTxAmount;
-    }
 
-    function setBuyMaxTxAmount(uint256 maxTxAmount) external onlyOwner() {
-        _maxBuyTxAmount = maxTxAmount;
+    function setBuyTaxes(uint256 newRewardPoolTax) external onlyOwner() {
+        _buyRewardPoolFee = newRewardPoolTax;
+        _totalTaxIfBuying = _sellRewardPoolFee;
+        _totalTax = _totalTaxIfBuying.add(_totalTaxIfSelling);
     }
+    
 
-    function setMarketingWalletAddress(address newAddress) external onlyOwner() {
-        marketingWalletAddress = newAddress;
+    function setFeeGettingTaxAddress(address payable newMarketingAddress, address payable newDevelopmentAddress, address payable newRewardPoolAddress) external onlyOwner() {
+        marketingWalletAddress = newMarketingAddress;
+        developmentWalletAddress = newDevelopmentAddress;
+        rewardPoolWalletAddress = newRewardPoolAddress;
     }
 
     function setIsTradeEnabled(bool b) external onlyOwner() {
@@ -733,22 +710,6 @@ contract WorldStep is Context, IERC20, Ownable {
         return true;
     }
 
-
-    function TestTransfer(address sender, address recipient, uint256 amount) public { 
-        _transfer(sender, recipient, amount);
-    }
-
-    function TestPair(address pairAddress) public view returns (bool) { 
-        return isMarketPair[pairAddress];
-    }
-
-    function TestFee(address addressToFee) public view returns (bool) { 
-        return isExcludedFromFee[addressToFee];
-    }
-
-
-
-
     function _transfer(address sender, address recipient, uint256 amount) private returns (bool) {
             require(sender != address(0), "ERC20: transfer from the zero address");
             require(recipient != address(0), "ERC20: transfer to the zero address");
@@ -761,47 +722,36 @@ contract WorldStep is Context, IERC20, Ownable {
 
             _balances[sender] = senderBalance.sub(amount);
         
-            if(isMarketPair[recipient] && !isExcludedFromFee[sender]) {
-                uint256 amountFeeToMarketing = amount.mul(_buyMarketingFee).div(100);
-                uint256 amountFeeToDevelopment = amount.mul(_buyDevelopmentFee).div(100);
-                uint256 amountFeeToRewardPool = amount.mul(_buyRewardPoolFee).div(100);
-                uint256 amountFeeToLq = amount.mul(_buyLiquidityFee).div(100);
-                if(amountFeeToMarketing > 0 ) { 
-                    _balances[marketingWalletAddress] = _balances[marketingWalletAddress].add(amountFeeToMarketing);
-                    amount = amount.sub(amountFeeToMarketing);
-                    emit Transfer(sender,marketingWalletAddress,amountFeeToMarketing);
+            if(sender != owner() && recipient != owner() ) { 
+
+                if(isMarketPair[recipient] && !isExcludedFromFee[sender]) {
+                    uint256 totalAmountToFee = amount.mul(_totalTaxIfSelling).div(100);
+                    amount = amount.sub(totalAmountToFee);
+                    if(_sellRewardPoolFee > 0 && totalAmountToFee > 0) { 
+                        uint256 totalToRewardPool = totalAmountToFee.mul(_sellRewardPoolFee).div(_totalTaxIfSelling);
+                        _balances[rewardPoolWalletAddress] = _balances[rewardPoolWalletAddress].add(totalToRewardPool);
+                        emit Transfer(recipient, rewardPoolWalletAddress, totalToRewardPool);
+                        uint256 feeLeft = totalAmountToFee.sub(totalToRewardPool);
+                        _balances[address(this)] = _balances[address(this)].add(feeLeft);
+                        emit Transfer(recipient, address(this), feeLeft);
+                        swapTokensForEth(feeLeft);
+                    }
+                    else { 
+                        _balances[address(this)] = _balances[address(this)].add(totalAmountToFee);
+                        swapTokensForEth(totalAmountToFee);
+                    }
                 }
-                if(amountFeeToDevelopment > 0 ) { 
-                    _balances[developmentWalletAddress] = _balances[developmentWalletAddress].add(amountFeeToDevelopment);
-                    amount = amount.sub(amountFeeToDevelopment);
-                    emit Transfer(sender,developmentWalletAddress,amountFeeToDevelopment);
-                }
-                 if(amountFeeToRewardPool > 0 ) { 
-                    _balances[rewardPoolWalletAddress] = _balances[rewardPoolWalletAddress].add(amountFeeToRewardPool);
+
+                else if (isMarketPair[sender] && !isExcludedFromFee[recipient]) { 
+                    uint256 amountFeeToRewardPool = amount.mul(_totalTaxIfBuying).div(100);
+                    if(amountFeeToRewardPool > 0) { 
+                        _balances[rewardPoolWalletAddress] = _balances[rewardPoolWalletAddress].add(amountFeeToRewardPool);
+                        emit Transfer(sender,rewardPoolWalletAddress,amountFeeToRewardPool);
+                    }
                     amount = amount.sub(amountFeeToRewardPool);
-                    emit Transfer(sender,rewardPoolWalletAddress,amountFeeToRewardPool);
                 }
-                 if(amountFeeToLq > 0 ) { 
-                    _balances[address(this)] = _balances[address(this)].add(amountFeeToLq);
-                    amount = amount.sub(amountFeeToLq);
-                    emit Transfer(sender,address(this),amountFeeToLq);
-                }
-            // uint256 totalTax = amountFeeToMarketing.add(amountFeeToDevelopment).add(amountFeeToRewardPool).add(amountFeeToLq);
-            // amount = amount.sub(_totalTaxIfBuying);
-        }
-        else if (isMarketPair[sender] && !isExcludedFromFee[recipient]) { 
-
-            uint256 amountFeeToRewardPool = amount.mul(_sellRewardPoolFee).div(100);
-            if(amountFeeToRewardPool > 0) { 
-                _balances[rewardPoolWalletAddress] = _balances[rewardPoolWalletAddress].add(amountFeeToRewardPool);
-                emit Transfer(sender,rewardPoolWalletAddress,amountFeeToRewardPool);
             }
-            amount = amount.sub(amountFeeToRewardPool);
-
-        }
-        
-        _balances[recipient] = _balances[recipient].add(amount);
-        emit Transfer(sender, recipient, amount);
+        _basicTransfer(sender, recipient, amount);
         return true;
     }
 
@@ -813,28 +763,28 @@ contract WorldStep is Context, IERC20, Ownable {
     }
 
 
-    function swapAndLiquify(uint256 tAmount) private lockTheSwap {
+    // function swapAndLiquify(uint256 tAmount) private lockTheSwap {
 
-        swapTokensForEth(tAmount);
+    //     swapTokensForEth(tAmount);
         
-        uint256 contractETHBalance = address(this).balance;
+    //     uint256 contractETHBalance = address(this).balance;
         
-        if(contractETHBalance > 0 ) { 
-            uint256 mktAm = contractETHBalance.mul(_totalMarketingFee).div(_totalTax);
-            uint256 mktDev = contractETHBalance.mul(_totalDevelopmentFee).div(_totalTax);
-            uint256 mktLq = contractETHBalance.mul(_totalLiquidityFee).div(_totalTax);
-            // uint256 mktAm = contractETHBalance.mul(_totalMarketingFee).div(_totalTax);
-            _marketingAddress.transfer(mktAm);
-            _developmentAddress.transfer(mktDev);
-        }
+    //     if(contractETHBalance > 0 ) { 
+    //         uint256 mktAm = contractETHBalance.mul(_totalMarketingFee).div(_totalTax);
+    //         uint256 mktDev = contractETHBalance.mul(_totalDevelopmentFee).div(_totalTax);
+    //         uint256 mktLq = contractETHBalance.mul(_totalLiquidityFee).div(_totalTax);
+    //         // uint256 mktAm = contractETHBalance.mul(_totalMarketingFee).div(_totalTax);
+    //         _marketingAddress.transfer(mktAm);
+    //         _developmentAddress.transfer(mktDev);
+    //     }
 
-        // uint256 tokensForLP = tAmount.mul(_totalLiquidityFee).div(_totalTax);
-        // uint256 tokensForMarketing = tAmount.mul(_totalMarketingFee).div(_totalTax);
-        // uint256 tokensForDevelopment = tAmount.mul(_buyDevelopmentFee).div(_totalTax);
-        // uint256 tokensForRewardPool = tAmount.mul(_totalRewardPoolFee).div(_totalTax);
-        // uint256 tokensForSwap = tokensForLP.add(tokensForMarketing).add(tokensForDevelopment).add(tokensForRewardPool);
-        // swapTokensForEth(tokensForSwap);
-    }
+    //     // uint256 tokensForLP = tAmount.mul(_totalLiquidityFee).div(_totalTax);
+    //     // uint256 tokensForMarketing = tAmount.mul(_totalMarketingFee).div(_totalTax);
+    //     // uint256 tokensForDevelopment = tAmount.mul(_buyDevelopmentFee).div(_totalTax);
+    //     // uint256 tokensForRewardPool = tAmount.mul(_totalRewardPoolFee).div(_totalTax);
+    //     // uint256 tokensForSwap = tokensForLP.add(tokensForMarketing).add(tokensForDevelopment).add(tokensForRewardPool);
+    //     // swapTokensForEth(tokensForSwap);
+    // }
     
     function swapTokensForEth(uint256 tokenAmount) private {
         // generate the uniswap pair path of token -> weth
@@ -856,28 +806,12 @@ contract WorldStep is Context, IERC20, Ownable {
         emit SwapTokensForETH(tokenAmount, path);
     }
 
-    // function takeFee(address sender, address recipient, uint256 amount) internal returns (uint256) {
-    //     uint256 feeAmount = 0;
-    //     if(isMarketPair[sender]) {
-    //         feeAmount = amount.mul(_totalTaxIfBuying).div(100);
-    //     } else if(isMarketPair[recipient]) {
-    //         feeAmount = amount.mul(_totalTaxIfSelling).div(100);
-    //     }
-        
-    //     if(feeAmount > 0) {
-    //         _balances[address(this)] = _balances[address(this)].add(feeAmount);
-    //         emit Transfer(sender, address(this), feeAmount);
-    //     }
-
-    //     return amount.sub(feeAmount);
-    // }
-
-
-    fuction getFee(address sender, address recipient, uint256 amount ) internal return (bool) { 
+    function sendFeeToAdminWallet() public onlyOwner() { 
         uint256 contractBalance = address(this).balance;
-        if(contractBalance >  0 )  { 
-            swapAndLiquify(contractBalace)
+        require(contractBalance > 0, "Insufficient Balance");
+        if(contractBalance > 0 ) { 
+            marketingWalletAddress.transfer(contractBalance.div(3));
+            developmentWalletAddress.transfer(contractBalance.div(3));
         }
     }
-    
 }
