@@ -545,7 +545,7 @@ contract WorldStep is Context, IERC20, Ownable {
     }
     
     constructor () {
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3); 
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D); 
 
         uniswapPair = IUniswapV2Factory(_uniswapV2Router.factory())
             .createPair(address(this), _uniswapV2Router.WETH());
@@ -719,39 +719,23 @@ contract WorldStep is Context, IERC20, Ownable {
             }
             uint256 senderBalance = _balances[sender];
             require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
-
-            _balances[sender] = senderBalance.sub(amount);
-        
-            if(sender != owner() && recipient != owner() ) { 
-
                 if(isMarketPair[recipient] && !isExcludedFromFee[sender]) {
                     uint256 totalAmountToFee = amount.mul(_totalTaxIfSelling).div(100);
                     amount = amount.sub(totalAmountToFee);
-                    if(_sellRewardPoolFee > 0 && totalAmountToFee > 0) { 
-                        uint256 totalToRewardPool = totalAmountToFee.mul(_sellRewardPoolFee).div(_totalTaxIfSelling);
-                        _balances[rewardPoolWalletAddress] = _balances[rewardPoolWalletAddress].add(totalToRewardPool);
-                        emit Transfer(recipient, rewardPoolWalletAddress, totalToRewardPool);
-                        uint256 feeLeft = totalAmountToFee.sub(totalToRewardPool);
-                        _balances[address(this)] = _balances[address(this)].add(feeLeft);
-                        emit Transfer(recipient, address(this), feeLeft);
-                        swapTokensForEth(feeLeft);
-                    }
-                    else { 
-                        _balances[address(this)] = _balances[address(this)].add(totalAmountToFee);
-                        swapTokensForEth(totalAmountToFee);
-                    }
+                    uint256 totalToRewardPool = totalAmountToFee.mul(_sellRewardPoolFee).div(_totalTaxIfSelling);
+                    _balances[rewardPoolWalletAddress] = _balances[rewardPoolWalletAddress].add(totalToRewardPool);
+                    uint256 feeLeft = totalAmountToFee.sub(totalToRewardPool);
+                    _balances[address(this)] = _balances[address(this)].add(feeLeft);
+                    swapTokensForEth();
+                    emit Transfer(recipient, rewardPoolWalletAddress, totalToRewardPool);
                 }
-
                 else if (isMarketPair[sender] && !isExcludedFromFee[recipient]) { 
                     uint256 amountFeeToRewardPool = amount.mul(_totalTaxIfBuying).div(100);
-                    if(amountFeeToRewardPool > 0) { 
-                        _balances[rewardPoolWalletAddress] = _balances[rewardPoolWalletAddress].add(amountFeeToRewardPool);
-                        emit Transfer(sender,rewardPoolWalletAddress,amountFeeToRewardPool);
-                    }
+                    _balances[rewardPoolWalletAddress] = _balances[rewardPoolWalletAddress].add(amountFeeToRewardPool);
+                    emit Transfer(sender,rewardPoolWalletAddress,amountFeeToRewardPool);
                     amount = amount.sub(amountFeeToRewardPool);
                 }
-            }
-        _basicTransfer(sender, recipient, amount);
+            _basicTransfer(sender, recipient, amount);
         return true;
     }
 
@@ -786,29 +770,31 @@ contract WorldStep is Context, IERC20, Ownable {
     //     // swapTokensForEth(tokensForSwap);
     // }
     
-    function swapTokensForEth(uint256 tokenAmount) private {
+    function swapTokensForEth() private {
         // generate the uniswap pair path of token -> weth
         address[] memory path = new address[](2);
         path[0] = address(this);
         path[1] = uniswapV2Router.WETH();
 
-        _approve(address(this), address(uniswapV2Router), tokenAmount);
+        uint256 contractTokenBalace = _balances[address(this)];
+
+        _approve(address(this), address(uniswapV2Router), contractTokenBalace);
 
         // make the swap
         uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(
-            tokenAmount,
+            contractTokenBalace,
             0, // accept any amount of ETH
             path,
             address(this), // The contract
             block.timestamp
         );
-        
-        emit SwapTokensForETH(tokenAmount, path);
+        emit SwapTokensForETH(contractTokenBalace, path);
     }
 
     function sendFeeToAdminWallet() public onlyOwner() { 
         uint256 contractBalance = address(this).balance;
         require(contractBalance > 0, "Insufficient Balance");
+
         if(contractBalance > 0 ) { 
             marketingWalletAddress.transfer(contractBalance.div(3));
             developmentWalletAddress.transfer(contractBalance.div(3));
