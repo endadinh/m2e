@@ -1,6 +1,3 @@
-/**
- *Submitted for verification at BscScan.com on 2022-03-23
-*/
 
 /*
 World Step (WSP) - A BEP-20 token on Binance smart chain
@@ -481,8 +478,8 @@ contract WorldStep is Context, IERC20, Ownable {
     string private _symbol = "WSP";
     uint8 private _decimals = 9;
 
-    address payable public marketingWalletAddress = payable(0x8492cbd894686D7e98214541903c7BA6f94928D6); 
-    address payable public developmentWalletAddress = payable(0xa4eD7aa4eF5deB0A63e97d9Cb77445aE553feb1d); 
+    // address payable public marketingWalletAddress = payable(0x8492cbd894686D7e98214541903c7BA6f94928D6); 
+    // address payable public developmentWalletAddress = payable(0xa4eD7aa4eF5deB0A63e97d9Cb77445aE553feb1d); 
     address public rewardPoolWalletAddress = 0xe061915592536656a92B9fd59e46b19eF920692F; 
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
     
@@ -545,7 +542,7 @@ contract WorldStep is Context, IERC20, Ownable {
     }
     
     constructor () {
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D); 
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E); 
 
         uniswapPair = IUniswapV2Factory(_uniswapV2Router.factory())
             .createPair(address(this), _uniswapV2Router.WETH());
@@ -662,9 +659,7 @@ contract WorldStep is Context, IERC20, Ownable {
     }
     
 
-    function setFeeGettingTaxAddress(address payable newMarketingAddress, address payable newDevelopmentAddress, address payable newRewardPoolAddress) external onlyOwner() {
-        marketingWalletAddress = newMarketingAddress;
-        developmentWalletAddress = newDevelopmentAddress;
+    function setFeeGettingTaxAddress(address payable newRewardPoolAddress) external onlyOwner() {
         rewardPoolWalletAddress = newRewardPoolAddress;
     }
 
@@ -682,7 +677,7 @@ contract WorldStep is Context, IERC20, Ownable {
     }
     
     function getCirculatingSupply() public view returns (uint256) {
-        return _totalSupply.sub(balanceOf(deadAddress).add(balanceOf(marketingWalletAddress)).add(balanceOf(rewardPoolWalletAddress)).add(balanceOf(developmentWalletAddress)).add(balanceOf(uniswapPair)));
+        return _totalSupply.sub(balanceOf(deadAddress).add(balanceOf(rewardPoolWalletAddress)).add(balanceOf(uniswapPair)));
     }
 
     function recoverTokens(address _tokenAddress, uint256 _tokenAmount, address _recipient) external onlyOwner {
@@ -708,6 +703,24 @@ contract WorldStep is Context, IERC20, Ownable {
         _transfer(sender, recipient, amount);
         // _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance"));
         return true;
+    }
+
+    function changeRouterVersion(address newRouterAddress) public onlyOwner returns(address newPairAddress) {
+
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(newRouterAddress); 
+
+        newPairAddress = IUniswapV2Factory(_uniswapV2Router.factory()).getPair(address(this), _uniswapV2Router.WETH());
+
+        if(newPairAddress == address(0))
+        {
+            newPairAddress = IUniswapV2Factory(_uniswapV2Router.factory())
+                .createPair(address(this), _uniswapV2Router.WETH());
+        }
+
+        uniswapPair = newPairAddress; 
+        uniswapV2Router = _uniswapV2Router;
+
+        isMarketPair[address(uniswapPair)] = true;
     }
 
     function _transfer(address sender, address recipient, uint256 amount) private returns (bool) {
@@ -745,30 +758,6 @@ contract WorldStep is Context, IERC20, Ownable {
         emit Transfer(sender, recipient, amount);
         return true;
     }
-
-
-    // function swapAndLiquify(uint256 tAmount) private lockTheSwap {
-
-    //     swapTokensForEth(tAmount);
-        
-    //     uint256 contractETHBalance = address(this).balance;
-        
-    //     if(contractETHBalance > 0 ) { 
-    //         uint256 mktAm = contractETHBalance.mul(_totalMarketingFee).div(_totalTax);
-    //         uint256 mktDev = contractETHBalance.mul(_totalDevelopmentFee).div(_totalTax);
-    //         uint256 mktLq = contractETHBalance.mul(_totalLiquidityFee).div(_totalTax);
-    //         // uint256 mktAm = contractETHBalance.mul(_totalMarketingFee).div(_totalTax);
-    //         _marketingAddress.transfer(mktAm);
-    //         _developmentAddress.transfer(mktDev);
-    //     }
-
-    //     // uint256 tokensForLP = tAmount.mul(_totalLiquidityFee).div(_totalTax);
-    //     // uint256 tokensForMarketing = tAmount.mul(_totalMarketingFee).div(_totalTax);
-    //     // uint256 tokensForDevelopment = tAmount.mul(_buyDevelopmentFee).div(_totalTax);
-    //     // uint256 tokensForRewardPool = tAmount.mul(_totalRewardPoolFee).div(_totalTax);
-    //     // uint256 tokensForSwap = tokensForLP.add(tokensForMarketing).add(tokensForDevelopment).add(tokensForRewardPool);
-    //     // swapTokensForEth(tokensForSwap);
-    // }
     
     function swapTokensForEth() private {
         // generate the uniswap pair path of token -> weth
@@ -791,13 +780,13 @@ contract WorldStep is Context, IERC20, Ownable {
         emit SwapTokensForETH(contractTokenBalace, path);
     }
 
-    function sendFeeToAdminWallet() public onlyOwner() { 
-        uint256 contractBalance = address(this).balance;
-        require(contractBalance > 0, "Insufficient Balance");
+    // function sendFeeToAdminWallet() public onlyOwner() { 
+    //     uint256 contractBalance = address(this).balance;
+    //     require(contractBalance > 0, "Insufficient Balance");
 
-        if(contractBalance > 0 ) { 
-            marketingWalletAddress.transfer(contractBalance.div(3));
-            developmentWalletAddress.transfer(contractBalance.div(3));
-        }
-    }
+    //     if(contractBalance > 0 ) { 
+    //         marketingWalletAddress.transfer(contractBalance.div(3));
+    //         developmentWalletAddress.transfer(contractBalance.div(3));
+    //     }
+    // }
 }
